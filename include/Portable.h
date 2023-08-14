@@ -16,6 +16,17 @@
 #define USE_AVX
 #endif
 
+#ifdef __SSE__
+#define USE_SSE
+#endif
+
+#ifdef __SSE2__
+#define USE_SSE2
+#endif
+
+#ifdef __SSE3__
+#define USE_SSE
+#endif
 
 #ifdef __SSE4_1__
 #define USE_SSE41

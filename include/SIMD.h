@@ -28,7 +28,7 @@ FORCE_INLINE int popcnt32(int x32)
 
 #if defined(USE_AVX) || defined(USE_AVX2)
 #include <immintrin.h>
-#else
+#elif defined(USE_SSE2)
 #include <emmintrin.h>
 #ifdef USE_SSE41
 #include <smmintrin.h>
@@ -49,6 +49,29 @@ struct IVec;
 template <InstrSet I, class T>
 struct FVec1;
 
+template <> struct InstrIntTraits<Scalar>
+{
+    typedef uint32 vec_t;
+};
+
+template <> struct InstrFloatTraits<Scalar, float>
+{
+    typedef float  vec_t;
+};
+
+template <> struct InstrFloatTraits<Scalar, double>
+{
+    typedef double vec_t;
+};
+
+template <InstrSet I, typename T>
+struct FTOITraits
+{
+    typedef IVec<Scalar, float> vec_t;
+};
+
+#ifdef USE_SSE2
+
 template <> struct InstrIntTraits<SSE>
 {
     typedef __m128i vec_t;
@@ -64,11 +87,13 @@ template <> struct InstrFloatTraits<SSE, double>
     typedef __m128d vec_t;
 };
 
-template <InstrSet I, typename T>
-struct FTOITraits
+template <>
+struct FTOITraits<SSE, float>
 {
     typedef IVec<SSE, float> vec_t;
 };
+
+#endif  // USE_SSE2
 
 #ifdef USE_AVX
 
@@ -113,6 +138,8 @@ protected:
 
 template <InstrSet>
 struct IVecBase;
+
+#ifdef USE_SSE2
 
 template <>
 struct IVecBase<SSE> : VecStorage<InstrIntTraits<SSE>>
@@ -345,6 +372,8 @@ FORCE_INLINE IVec<SSE,double> operator>=  (const FVec<SSE,double>& a, const FVec
 #ifdef USE_FMA
 FORCE_INLINE FVec<SSE, double> mulSub(const FVec<SSE, double>& a, const FVec<SSE, double>& b, const FVec<SSE, double>& c ) { return _mm_fmsub_pd(a, b, c); }
 #endif
+
+#endif // USE_SSE2
 
 #ifdef USE_AVX
 

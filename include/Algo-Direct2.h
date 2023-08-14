@@ -33,14 +33,14 @@ public:
     }
 };
 
-
 template <InstrSet I, typename T, Algos A>
 struct AlgoVecBase<I, T, A, typename std::enable_if<DirectAux::IsDirect2<A>::value>::type> : AlgoScalarBase<T, A>
 {
+
     static const uint32 nElem = sizeof(typename InstrFloatTraits<I, T>::vec_t) / sizeof(T);
 
     typedef FVec<I, T> fVec;
-    typedef IVec<SSE, T> i128;
+    typedef IVec<I, T> i128;
 
     struct Constants
     {
@@ -52,6 +52,14 @@ struct AlgoVecBase<I, T, A, typename std::enable_if<DirectAux::IsDirect2<A>::val
 private:
     typedef AlgoScalarBase<T, A> base_t;
 
+    // FORCE_INLINE
+    //     // NO_INLINE
+    //     void resolve(const FVec<Scalar, float>&vz, const IVec<Scalar, float>& bidx, uint32 *pr) const
+    // {
+    //     // @todo
+    // }
+
+    #ifdef USE_SSE2
     FORCE_INLINE
         //NO_INLINE
         void resolve(const FVec<SSE, float>& vz, const IVec<SSE, float>& bidx, uint32 *pr) const
@@ -135,6 +143,8 @@ private:
         pr[0] = u.ui32[0];
         pr[1] = u.ui32[2];
     }
+
+#endif // USE_SSE2
 
 #ifdef USE_AVX
 

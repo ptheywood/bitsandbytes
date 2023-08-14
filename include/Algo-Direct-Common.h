@@ -116,7 +116,7 @@ struct DirectTraits
     }
 };
 
-#ifdef USE_FMA
+#if defined(USE_FMA) && defined(USE_SSE2)
 template <unsigned char Gap, typename T>
 struct DirectTraits<true,Gap,T>
 {
