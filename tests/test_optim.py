@@ -7,7 +7,10 @@ from itertools import product
 from os.path import join
 
 import pytest
-from lion_pytorch import Lion
+try:
+    from lion_pytorch import Lion
+except ImportError:
+    pytest.skip("lion_pytorch.Lion module not available", allow_module_level=True)
 
 import torch
 
