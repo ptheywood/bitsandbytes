@@ -4,17 +4,19 @@ import math
 
 from itertools import product
 
-import transformers
-from transformers import (
-  AutoConfig,
-  AutoModelForCausalLM,
-  AutoTokenizer,
-  BitsAndBytesConfig,
-  GenerationConfig,
-  set_seed,
+try:
+    import transformers
+    from transformers import (
+    AutoConfig,
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    BitsAndBytesConfig,
+    GenerationConfig,
+    set_seed,
 
-)
-
+    )
+except ImportError:
+    pytest.skip("transformers module not available", allow_module_level=True)
 
 
 def get_4bit_config():

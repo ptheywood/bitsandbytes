@@ -3,7 +3,10 @@ import random
 import time
 from itertools import product
 
-import einops
+try:
+    import einops
+except ImportError:
+    pass
 import pytest
 import torch
 import numpy as np
@@ -257,6 +260,7 @@ def quant_multi(x, dim):
 
 
 def quant_multi_chunk(x, dim, chunk_size=32):
+    pytest.importorskip('einops') 
     if dim == 1:
         x_chunked = einops.rearrange(x, "(c a) b -> c a b", c=chunk_size)
         max1 = torch.amax(torch.abs(x_chunked), dim=dim + 1, keepdim=True)
@@ -1019,6 +1023,7 @@ names = ["dim1_{}_dim2_{}_dims_{}".format(*vals) for vals in values]
 
 @pytest.mark.parametrize("dim1, dim2, dims", values, ids=names)
 def test_colrow_absmax(dim1, dim2, dims):
+    pytest.importorskip('einops') 
     for i in range(k):
         threshold = 3.0
         A = torch.randn(dim1, dim2, device="cuda").half()

@@ -1,9 +1,11 @@
 import os
+import sys
 import pytest
 import torch
 from pathlib import Path
 
 # hardcoded test. Not good, but a sanity check for now
+@pytest.mark.skipif(sys.platform == "win32" or os.environ['USER'] != "dettmers", reason="does not run on windows")
 def test_manual_override():
     manual_cuda_path = str(Path('/mmfs1/home/dettmers/data/local/cuda-12.2'))
 
